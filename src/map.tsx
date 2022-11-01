@@ -164,7 +164,14 @@ export function Map() {
           >
             Jake Coppinger
           </a>{" "}
-          | GPLv3 on Github
+          | Open source (GPLv3) on{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/jakecoppinger/sydney-bike-parking-map"
+          >
+            Github
+          </a>
         </label>
       </div>
       <div ref={mapContainer} className="map-container" />

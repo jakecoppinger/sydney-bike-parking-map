@@ -1,5 +1,13 @@
-Bicycle Parking Map
-======================
+Sydney Bike Parking Map
+=======================
+
+A map of bike parking facilities in Sydney to demo the data available in OpenStreetMap.
+
+Also works for any city in the world!
+
+I built this over a lunch break and afternoon, I promise I usually write nicer code!
+
+PRs and forks very welcome :)
 
 # Local development
 
