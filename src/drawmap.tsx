@@ -3,13 +3,14 @@ import ReactDOM from "react-dom";
 import mapboxgl from "mapbox-gl";
 import Card from "./Card";
 import * as http from "https";
-import { OverpassResponse, RawOverpassNode, RawOverpassWay } from "./interfaces";
-
+import {
+  OverpassResponse,
+  RawOverpassNode,
+  RawOverpassWay,
+} from "./interfaces";
 
 // southern-most latitude, western-most longitude, northern-most latitude, eastern-most longitude.
-export async function getOSMData(
-  bounds: number[]
-): Promise<OverpassResponse> {
+export async function getOSMData(bounds: number[]): Promise<OverpassResponse> {
   const options = {
     hostname: "overpass-api.de",
     port: 443,
@@ -51,7 +52,7 @@ export async function getOSMData(
         }
 
         const jsonResponse = JSON.parse(body);
-        const bars  = jsonResponse.elements;
+        const bars = jsonResponse.elements;
         resolve(bars);
       });
     });
@@ -80,54 +81,29 @@ export function drawMarkerAndCard(
 
   let markerOptions: mapboxgl.MarkerOptions = {};
   markerOptions.color = "gray";
+
+  const defaultScale = 0.5;
+  markerOptions.scale = defaultScale;
+
   if (item.tags && item.tags.capacity !== undefined) {
     const capacity = parseInt(item.tags.capacity);
-    let possibleScale = 0.3 + (capacity / 30);
-    if(possibleScale > 2) {
+    console.log({capacity});
+    let possibleScale = defaultScale + capacity / 30;
+    if (possibleScale > 2) {
       possibleScale = 2;
     }
-      markerOptions.scale = possibleScale;
-    // if (capacity === 1) {
-    //   markerOptions.scale = 0.2;
-    // } else if (capacity <= 10) {
-    //   markerOptions.scale = 0.5;
-    // } else if (capacity <= 30) {
-    //   markerOptions.scale = 1;
-    //   // markerOptions.color = "orange";
-    // } else if (capacity <= 50) {
-    //   markerOptions.scale = 1.5;
-    //   // markerOptions.color = "red";
-    // }
+    markerOptions.scale = possibleScale;
 
-    if (item.tags && item.tags.covered === 'yes') {
+    if (item.tags && item.tags.covered === "yes") {
       markerOptions.color = "green";
     }
-    if (item.tags && item.tags.lit === 'yes') {
+    if (item.tags && item.tags.lit === "yes") {
       markerOptions.color = "yellow";
     }
-    if (item.tags && item.tags.bicycle_parking === 'shed') {
+    if (item.tags && item.tags.bicycle_parking === "shed") {
       markerOptions.color = "#00ec18";
     }
-
   }
-  // if(parseInt(item.tags.capacity)
-  // markerOptions.scale = 0.7;
-
-  // @ts-ignore
-  // if (item.tags.operator === "QMS") {
-  //   markerOptions.color = "red";
-  //   // @ts-ignore
-  // } else if (item.tags.advertising === "poster_box") {
-  //   markerOptions.color = "orange";
-  //   // @ts-ignore
-  // } else if (item.tags.amenity === "telephone") {
-  //   markerOptions.color = "#66000000"; //"green";
-  //   // @ts-ignore
-  // } else if (item.tags.shop === "kiosk") {
-  //   markerOptions.color = "blue";
-  // } else {
-  //   markerOptions.color = "gray";
-  // }
 
   const marker = new mapboxgl.Marker(markerOptions)
     .setLngLat([lon, lat])
@@ -176,7 +152,7 @@ export function drawMarkersAndCards(
   items: RawOverpassNode[]
 ): mapboxgl.Marker[] {
   const markers = items
-    .filter(item => item.type === 'node')
+    .filter((item) => item.type === "node")
     .map((node: RawOverpassNode) => {
       return drawMarkerAndCard(node, map);
     });

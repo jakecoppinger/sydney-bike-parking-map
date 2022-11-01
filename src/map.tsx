@@ -10,23 +10,6 @@ import { wayToNode } from "./geo-utils";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoiamFrZWMiLCJhIjoiY2tkaHplNGhjMDAyMDJybW4ybmRqbTBmMyJ9.AR_fnEuka8-cFb4Snp3upw";
-interface State {
-  viewport: {
-    longitude: number;
-    latitude: number; // starting position
-    zoom: number;
-  };
-  map?: mapboxgl.Map;
-  adNode?: OverpassResponse[];
-  markers?: mapboxgl.Marker[];
-}
-
-// const params = new URLSearchParams(window.location.search);
-// const paramLat = params.get("lat");
-// const paramLon = params.get("lon");
-
-// console.log("PARAMS");
-// console.log({ lat: paramLat, lon: paramLon });
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -43,10 +26,6 @@ async function fetchAndDrawMarkers(
   const northLat = bounds.getNorth();
   const eastLong = bounds.getEast();
   const overpassBounds = [southernLat, westLong, northLat, eastLong];
-  // const sydneyOverpassBounds = [
-  //   -34.11748941036342, 150.7715606689453, -33.59860671494885,
-  //   151.36825561523438,
-  // ];
   console.log("getting ads");
 
   let ads: OverpassResponse;
@@ -58,16 +37,12 @@ async function fetchAndDrawMarkers(
     return;
   }
 
-  console.log("removing markers");
   removeMarkers(markers.current);
-  console.log("Drawing markers");
 
   const nodesAndWayCenters: RawOverpassNode[] = ads
     .map((item) => (item.type === "way" ? wayToNode(item, ads) : item))
-
     .filter((item) => item !== null)
     .map((item) => item as RawOverpassNode)
-
     .filter((item) => item.tags !== undefined);
 
   markers.current = await drawMarkersAndCards(map, nodesAndWayCenters);
